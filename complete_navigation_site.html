@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPZ的个人导航站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 40px 0 20px 0;
+            color: #444;
+            position: relative;
+            font-size: 24px;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        
+        .category {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .bookmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        
+        .bookmark {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 20px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .bookmark:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            background-color: #f0f8ff;
+            border-color: #6e8efb;
+        }
+        
+        .bookmark img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .bookmark span {
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background-color: #f0f0f0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .greeting {
+            margin: 30px 0;
+            text-align: center;
+            font-size: 18px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        #current-time {
+            font-weight: bold;
+            color: #6e8efb;
+        }
+        
+        #current-date {
+            font-weight: bold;
+            color: #a777e3;
+        }
+        
+        .ai-tools { border-left: 4px solid #ff6b6b; }
+        .dev-tools { border-left: 4px solid #4ecdc4; }
+        .entertainment { border-left: 4px solid #ffe66d; }
+        .utilities { border-left: 4px solid #a8e6cf; }
+        .personal { border-left: 4px solid #ffd93d; }
+        
+        @media (max-width: 768px) {
+            .bookmark-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚀 TPZ的个人导航站</h1>
+        <p>精心分类，高效导航 - 为美好的一天做好准备</p>
+    </header>
+    
+    <div class="container">
+        <div class="greeting">
+            <p>今天是 <span id="current-date"></span>，现在时间 <span id="current-time"></span></p>
+            <p>愿你今天工作顺利，心情愉快！✨</p>
+        </div>
+        
+        <!-- AI工具区 -->
+        <div class="category ai-tools">
+            <div class="category-title">
+                <span class="category-icon">🤖</span>
+                AI智能工具
+            </div>
+            <div class="bookmark-grid">
+                <a href="https://www.easychat.top" class="bookmark" target="_blank">
+                    <img src="https://bbs.api.hoilai.com/upload/img/2025/5/30/55d486b1-8f43-46b4-8433-fc8cb5d4cfce.png" alt="Easy Chat">
+                    <span>Claude1</span>
+                </a>
+                <a href="https://share.claude.best/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="Claude">
+                    <span>Claude2</span>
+                </a>
+                <a href="https://botgroup.chat/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="机器人群聊">
+                    <span>机器人群聊</span>
+                </a>
+                <a href="https://sharedchat.fun" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="ChatGPT共享账号">
+                    <span>ChatGPT共享账号</span>
+                </a>
+                <a href="https://gemini-zxh.deno.dev/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="Gemini">
+                    <span>Gemini 2.0</span>
+                </a>
+                <a href="https://suno.icepanda.dpdns.org" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="Suno音乐">
+                    <span>Suno AI音乐</span>
+                </a>
+                <a href="https://www.smartmap.space/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="AI地图">
+                    <span>AI地图</span>
+                </a>
+                <a href="https://gamma.app/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="AI生成PPT">
+                    <span>AI生成PPT</span>
+                </a>
+                <a href="https://illuminarty.ai/en/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="AI成分鉴别器">
+                    <span>AI成分鉴别器</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 开发工具区 -->
+        <div class="category dev-tools">
+            <div class="category-title">
+                <span class="category-icon">💻</span>
+                开发工具
+            </div>
+            <div class="bookmark-grid">
+                <a href="https://github.com" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="GitHub">
+                    <span>GitHub</span>
+                </a>
+                <a href="https://mermaid.live/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="流程图制作">
+                    <span>Mermaid流程图</span>
+                </a>
+                <a href="https://www.min2k.com/tools/markmap/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="思维导图">
+                    <span>Markmap思维导图</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 个人项目区 -->
+        <div class="category personal">
+            <div class="category-title">
+                <span class="category-icon">🏠</span>
+                个人项目
+            </div>
+            <div class="bookmark-grid">
+                <a href="https://icepanda473.github.io/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="zxh博客">
+                    <span>zxh博客网站</span>
+                </a>
+                <a href="https://tangpeizhi.github.io/type" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="打字游戏">
+                    <span>TPZ打字游戏</span>
+                </a>
+                <a href="https://tangpeizhi.github.io/photo" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="TPZ照片">
+                    <span>TPZ照片加密网站</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 实用工具区 -->
+        <div class="category utilities">
+            <div class="category-title">
+                <span class="category-icon">🔧</span>
+                实用工具
+            </div>
+            <div class="bookmark-grid">
+                <a href="https://www.freeconvert.com/zh/image-converter" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="图片转换">
+                    <span>图片格式转换</span>
+                </a>
+                <a href="https://www.freeconvert.com/zh/video-converter" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="视频转换">
+                    <span>视频格式转换</span>
+                </a>
+                <a href="https://tinify.cn/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="TinyPNG">
+                    <span>TinyPNG压缩</span>
+                </a>
+                <a href="https://search.chongbuluo.com/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="虫部落">
+                    <span>虫部落快搜</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 娱乐休闲区 -->
+        <div class="category entertainment">
+            <div class="category-title">
+                <span class="category-icon">🎮</span>
+                娱乐休闲
+            </div>
+            <div class="bookmark-grid">
+                <a href="https://www.bilibili.com" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="哔哩哔哩">
+                    <span>哔哩哔哩</span>
+                </a>
+                <a href="https://www.fangpi.net/" class="bookmark" target="_blank">
+                    <img src="/api/placeholder/48/48" alt="放屁音乐">
+                    <span>放屁音乐网</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 TPZ的个人导航站. 保留所有权利.</p>
+        <p>精心整理，分类清晰，让你的网络生活更高效 🌟</p>
+    </footer>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // 更新时间
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // 更新日期
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            document.getElementById('current-date').textContent = `${year}年${month}月${day}日 ${weekday}`;
+        }
+        
+        // 页面加载时更新一次
+        updateDateTime();
+        
+        // 每秒更新一次
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
