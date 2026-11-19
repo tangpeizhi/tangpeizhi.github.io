@@ -436,6 +436,169 @@ mark{ background:var(--highlight); color:inherit; border-radius:3px; padding:0 1
     .bookmark-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
     .status-copy p:last-child{ display:none; }
 }
+/* =========================================================
+   ANIM v3 — 野兽派动效层（Brutalist Motion）
+   硬朗回弹 cubic-bezier( overshoot ) · 错位旋转 · 故障抖动
+   原则：只动 transform/opacity，不改内容与图标、几乎不耗性能
+========================================================= */
+:root{ --spring:cubic-bezier(.22,1.45,.36,1); --snap:cubic-bezier(.85,0,.15,1); }
+
+/* 顶部阅读进度条（纯装饰） */
+.scroll-progress{
+    position:fixed; left:0; top:0; z-index:1000;
+    width:100%; height:3px; transform-origin:0 50%; transform:scaleX(0);
+    background:linear-gradient(90deg,var(--primary),var(--violet),var(--teal));
+}
+
+/* ---- Hero：光晕漂浮 + 标题砸入 + 渐变流动 ---- */
+.hero::after{ animation:glowDrift 9s ease-in-out infinite alternate; }
+.hero::before{ animation:glowDrift 11s ease-in-out infinite alternate-reverse; }
+@keyframes glowDrift{
+    from{ transform:translate(0,0) scale(1); }
+    to{ transform:translate(-36px,26px) scale(1.12); }
+}
+.topbar{ animation:dropIn .7s var(--spring) backwards; }
+.hero-content > div:first-child{ animation:riseIn .8s var(--spring) .08s backwards; }
+.hero h1{ animation:slamIn .85s var(--spring) .15s backwards; transform-origin:0 100%; }
+@keyframes dropIn{ from{ opacity:0; transform:translateY(-18px); } to{ opacity:1; transform:none; } }
+@keyframes riseIn{ from{ opacity:0; transform:translateY(24px); } to{ opacity:1; transform:none; } }
+@keyframes slamIn{
+    0%{ opacity:0; transform:translateY(34px) rotate(-1.6deg) scale(1.04); }
+    60%{ opacity:1; transform:translateY(-4px) rotate(.4deg) scale(.995); }
+    100%{ opacity:1; transform:none; }
+}
+.hero h1 span,.footer-title span{ background-size:220% 100%; animation:gradientFlow 7s linear infinite; }
+@keyframes gradientFlow{ from{ background-position:0% 50%; } to{ background-position:220% 50%; } }
+.hero-number{ transition:transform .35s ease-out; will-change:transform; }
+.hero-description{ animation:riseIn .8s var(--spring) .3s backwards; }
+.online-dot{ position:relative; }
+.online-dot::after{
+    content:""; position:absolute; inset:-4px; border-radius:50%;
+    border:1px solid #2dd4bf; animation:pingRing 2.2s ease-out infinite;
+}
+@keyframes pingRing{ 0%{ transform:scale(.5); opacity:.9; } 70%,100%{ transform:scale(1.5); opacity:0; } }
+.brand{ transition:transform .3s var(--spring); display:inline-block; }
+.brand:hover{ transform:rotate(-2deg) scale(1.05); }
+
+/* ---- 状态栏：弹入 + 时钟跳动 ---- */
+.status{ animation:statusIn .75s var(--spring) .25s backwards; }
+@keyframes statusIn{
+    0%{ opacity:0; transform:translateY(26px) rotate(.6deg); }
+    60%{ opacity:1; transform:translateY(-3px) rotate(-.2deg); }
+    100%{ opacity:1; transform:none; }
+}
+.status-mark{ transition:transform .45s var(--spring); }
+.status:hover .status-mark{ transform:rotate(180deg) scale(1.1); }
+.clock.tick{ animation:clockPop .32s var(--spring); }
+@keyframes clockPop{ 0%{ transform:scale(1); } 35%{ transform:scale(1.045); } 100%{ transform:scale(1); } }
+
+/* ---- 搜索：图标抖动 / 面板弹跳 / 建议阶梯入场 / 高亮脉冲 ---- */
+.search-box:focus-within .search-icon{ animation:iconWiggle .5s var(--spring); }
+@keyframes iconWiggle{ 0%,100%{ transform:rotate(0) scale(1); } 30%{ transform:rotate(-14deg) scale(1.2); } 65%{ transform:rotate(10deg) scale(1.1); } }
+.search-panel{ animation:panelIn .3s var(--spring); transform-origin:50% 0; }
+@keyframes panelIn{ from{ opacity:0; transform:translateY(-10px) scale(.97); } to{ opacity:1; transform:none; } }
+.suggest-item{ animation:suggestIn .35s var(--spring) backwards; animation-delay:calc(var(--d,0)*45ms); }
+@keyframes suggestIn{ from{ opacity:0; transform:translateX(-14px); } to{ opacity:1; transform:none; } }
+.suggest-item .suggest-icon{ transition:transform .3s var(--spring); }
+.suggest-item:hover .suggest-icon,.suggest-item.active .suggest-icon{ transform:rotate(-6deg) scale(1.12); }
+mark{ animation:markPop .45s var(--spring); }
+@keyframes markPop{ 0%{ transform:scale(1.25); } 100%{ transform:scale(1); } }
+.search-clear{ animation:popIn .3s var(--spring); }
+@keyframes popIn{ from{ opacity:0; transform:scale(.4) rotate(-90deg); } to{ opacity:1; transform:none; } }
+.history-chip{ animation:suggestIn .35s var(--spring) backwards; transition:transform .25s var(--spring),border-color .2s,color .2s,background .2s; }
+.history-chip:hover{ transform:translateY(-2px) rotate(-1deg); }
+.history-chip:active{ transform:scale(.94); }
+
+/* ---- 随机按钮：扫光 + 抖动 ---- */
+.random-button{ position:relative; overflow:hidden; }
+.random-button::after{
+    content:""; position:absolute; top:0; bottom:0; left:-70%; width:45%;
+    background:linear-gradient(105deg,transparent,rgba(255,255,255,.45),transparent);
+    transform:skewX(-18deg); transition:left .55s var(--snap);
+}
+.random-button:hover::after{ left:125%; }
+.random-button.shaking{ animation:btnShake .45s var(--snap); }
+@keyframes btnShake{
+    0%,100%{ transform:translateX(0) rotate(0); }
+    20%{ transform:translateX(-3px) rotate(-1.4deg); }
+    45%{ transform:translateX(3px) rotate(1.4deg); }
+    70%{ transform:translateX(-2px) rotate(-.8deg); }
+}
+
+/* ---- 标签：按下回弹 / 选中弹跳 ---- */
+.tab-button{ transition:background .2s,color .2s,border-color .2s,transform .3s var(--spring),box-shadow .2s; }
+.tab-button:active{ transform:scale(.93); }
+.tab-button.active{ animation:tabPop .38s var(--spring); }
+@keyframes tabPop{ 0%{ transform:scale(.9); } 55%{ transform:scale(1.06); } 100%{ transform:scale(1); } }
+/* ---- 分类滑动小方框（Tab Indicator）：平滑滑到选中按键底下 ---- */
+.tab-indicator{
+    position:absolute; left:0; top:0; z-index:0;
+    border-radius:999px; pointer-events:none; opacity:0;
+    background:linear-gradient(120deg,var(--primary),#7a5ee0);
+    box-shadow:0 8px 18px rgba(90,84,209,.30);
+}
+.tab-indicator.ready{
+    opacity:1;
+    transition:transform .55s cubic-bezier(.22,1.35,.36,1),width .55s cubic-bezier(.22,1.35,.36,1),height .55s cubic-bezier(.22,1.35,.36,1),opacity .3s ease;
+}
+.tab-button{ position:relative; z-index:1; }
+.tab-button.active{
+    background:transparent; border-color:transparent; color:#fff;
+    box-shadow:none; font-weight:600;
+}
+
+/* ---- 分类与卡片：阶梯弹入 + 悬停野兽化 + 3D 倾斜 ---- */
+.category{ animation:riseIn .6s var(--spring) backwards; }
+.category-badge{ transition:transform .4s var(--spring); }
+.category:hover .category-badge{ transform:rotate(-8deg) scale(1.14); }
+.category-count{ animation:popIn .4s var(--spring) .1s backwards; }
+.bookmark{
+    animation:cardIn .55s var(--spring) backwards;
+    animation-delay:calc(var(--d,0)*45ms);
+    transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+}
+body.is-searching .bookmark,body.is-searching .category{ animation:none; }
+@keyframes cardIn{
+    0%{ opacity:0; transform:translateY(28px) rotate(1.4deg) scale(.95); }
+    60%{ opacity:1; transform:translateY(-3px) rotate(-.3deg) scale(1.005); }
+    100%{ opacity:1; transform:translateY(0) rotate(0) scale(1); }
+}
+.bookmark .nav-icon svg{ transition:transform .35s var(--spring); }
+.bookmark:hover{ transform:perspective(700px) translateY(-6px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(-.4deg); }
+.bookmark:hover .nav-icon svg{ animation:iconBounce .55s var(--spring); }
+@keyframes iconBounce{
+    0%{ transform:scale(1) rotate(0); }
+    35%{ transform:scale(1.18) rotate(-7deg); }
+    65%{ transform:scale(1.08) rotate(5deg); }
+    100%{ transform:scale(1.12) rotate(0); }
+}
+.bookmark:active{ transform:scale(.965) !important; transition-duration:.08s; }
+
+/* ---- 空状态：故障 glitch ---- */
+.empty-state.show{ animation:panelIn .4s var(--spring); }
+.empty-state strong{ animation:glitchShift 2.4s steps(2,end) infinite; }
+@keyframes glitchShift{
+    0%,86%{ text-shadow:none; transform:none; }
+    88%{ text-shadow:-3px 0 var(--violet),3px 0 var(--teal); transform:translateX(2px); }
+    92%{ text-shadow:3px 0 var(--violet),-3px 0 var(--teal); transform:translateX(-2px); }
+    96%,100%{ text-shadow:none; transform:none; }
+}
+.empty-actions button{ transition:transform .3s var(--spring),filter .2s; }
+.empty-actions button:hover{ transform:translateY(-2px) rotate(-1deg); }
+.empty-actions button:active{ transform:scale(.94); }
+
+/* ---- 主题按钮 / 页脚 ---- */
+.theme-toggle svg{ animation:themeSpin .55s var(--spring); }
+@keyframes themeSpin{ from{ transform:rotate(-160deg) scale(.5); opacity:0; } to{ transform:none; opacity:1; } }
+.theme-toggle:active{ transform:scale(.88); }
+.footer{ opacity:0; transform:translateY(36px); transition:opacity .7s ease,transform .7s var(--spring); }
+.footer.revealed{ opacity:1; transform:none; }
+
+@media(max-width:700px){
+    .bookmark:hover .nav-icon svg{ animation:none; }
+    .bookmark{ transform:none; }
+}
+
 @media(prefers-reduced-motion:reduce){
     html{ scroll-behavior:auto; }
     *,*::before,*::after{
@@ -448,6 +611,7 @@ mark{ background:var(--highlight); color:inherit; border-radius:3px; padding:0 1
 
 
 <body>
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
 <a
     href="#main"
@@ -2708,6 +2872,7 @@ mark{ background:var(--highlight); color:inherit; border-radius:3px; padding:0 1
     class="tabs"
     id="tabs"
     aria-label="导航分类">
+    <span class="tab-indicator" id="tab-indicator" aria-hidden="true"></span>
 
     <button
         type="button"
@@ -3579,7 +3744,8 @@ document.getElementById("history-clear").addEventListener("click", ()=>{
 /* =========================================================
    CREATE CARD
 ========================================================= */
-function createCard(item, tokens){
+function createCard(item, tokens, index){
+    const stagger = Math.min(index || 0, 14);
     if(!isAllowedURL(item.url)){ return ""; }
     const plainTitle = escapeHTML(item.title);
     const url = escapeHTML(item.url);
@@ -3588,6 +3754,7 @@ function createCard(item, tokens){
     return `
         <a
             class="bookmark"
+            style="--d:${stagger}"
             href="${url}"
             target="_blank"
             rel="noopener noreferrer"
@@ -3634,6 +3801,7 @@ function render(){
         .filter(category=>category.items.length > 0);
 
     const visibleCount = categories.reduce((n,c)=>n + c.items.length, 0);
+    document.body.classList.toggle("is-searching", !!query);
 
     if(searchStatus){
         searchStatus.innerHTML = query
@@ -3657,7 +3825,7 @@ function render(){
     emptyState.classList.remove("show");
 
     content.innerHTML = categories.map(category=>{
-        const cards = category.items.map(item=>createCard(item, tokens)).join("");
+        const cards = category.items.map((item,i)=>createCard(item, tokens, i)).join("");
         return `
             <section
                 class="category"
@@ -3699,6 +3867,7 @@ function setCategory(id, focusTab){
         item.setAttribute("aria-pressed", String(active));
     });
     render();
+    moveTabIndicator();
     if(focusTab){
         const btn = tabs.find(b=>b.dataset.category === id);
         if(btn) btn.focus();
@@ -3726,7 +3895,7 @@ function updateSuggestions(){
     activeSuggestion = -1;
     const tokens = queryTokens();
     suggestionsBox.innerHTML = results.map((r,i)=>`
-        <button type="button" class="suggest-item" role="option" id="suggest-${i}" data-url="${escapeHTML(r.entry.url)}" data-title="${escapeHTML(r.entry.title)}">
+        <button type="button" class="suggest-item" role="option" id="suggest-${i}" style="--d:${i}" data-url="${escapeHTML(r.entry.url)}" data-title="${escapeHTML(r.entry.title)}">
             <span class="suggest-icon" aria-hidden="true"><svg viewBox="0 0 64 64" focusable="false"><use href="#icon-${escapeHTML(r.entry.icon)}" xlink:href="#icon-${escapeHTML(r.entry.icon)}"></use></svg></span>
             <span class="suggest-text">
                 <span class="suggest-title">${highlightTitle(r.entry.title, tokens)}</span>
@@ -3958,6 +4127,9 @@ function updateClock(){
 
     timeElement.textContent =
         `${hours}:${minutes}:${seconds}`;
+    timeElement.classList.remove("tick");
+    void timeElement.offsetWidth;
+    timeElement.classList.add("tick");
 
 
     timeElement
@@ -4037,11 +4209,12 @@ function getPreferredTheme(){
     }
 
 
-    return window
-        .matchMedia(
+    return (
+        window.matchMedia &&
+        window.matchMedia(
             "(prefers-color-scheme: dark)"
-        )
-        .matches
+        ).matches
+    )
         ? "dark"
         : "light";
 
@@ -4178,6 +4351,113 @@ applyTheme(
 ========================================================= */
 
 render();
+
+
+/* ---------- 分类滑动小方框：移动到当前选中按键底下 ---------- */
+const tabsNav = document.getElementById("tabs");
+const tabIndicator = document.getElementById("tab-indicator");
+function moveTabIndicator(){
+    if(!tabsNav || !tabIndicator) return;
+    const activeBtn = tabsNav.querySelector(".tab-button.active");
+    if(!activeBtn) return;
+    tabIndicator.style.width = activeBtn.offsetWidth + "px";
+    tabIndicator.style.height = activeBtn.offsetHeight + "px";
+    tabIndicator.style.transform = `translate(${activeBtn.offsetLeft}px, ${activeBtn.offsetTop}px)`;
+    if(!tabIndicator.classList.contains("ready")){
+        /* 首帧先无动画就位，下一帧再启用平滑滑动，避免从角落飞进来 */
+        requestAnimationFrame(()=>requestAnimationFrame(()=>tabIndicator.classList.add("ready")));
+    }
+}
+window.addEventListener("resize", moveTabIndicator);
+window.addEventListener("load", moveTabIndicator);
+
+
+/* =========================================================
+   ANIM v3 — 动效驱动（进度条 / 视差 / 3D倾斜 / 页脚揭示）
+   全部本地运行，尊重 prefers-reduced-motion
+========================================================= */
+(function(){
+    const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if(reduceMotion) {
+        const f = document.querySelector(".footer");
+        if(f) f.classList.add("revealed");
+        return;
+    }
+
+    /* 顶部阅读进度条 */
+    const progress = document.getElementById("scroll-progress");
+    let ticking = false;
+    function paintProgress(){
+        ticking = false;
+        if(!progress) return;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+        progress.style.transform = `scaleX(${ratio})`;
+    }
+    window.addEventListener("scroll", ()=>{
+        if(!ticking){ ticking = true; requestAnimationFrame(paintProgress); }
+    }, { passive:true });
+    paintProgress();
+
+    /* Hero 大数字鼠标视差 */
+    const hero = document.querySelector(".hero");
+    const heroNumber = document.querySelector(".hero-number");
+    if(hero && heroNumber && (window.matchMedia && window.matchMedia("(hover:hover)").matches)){
+        hero.addEventListener("mousemove", e=>{
+            const r = hero.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - .5;
+            const y = (e.clientY - r.top) / r.height - .5;
+            heroNumber.style.transform = `translate(${x * 22}px, ${y * 14}px) rotate(${x * -3}deg)`;
+        });
+        hero.addEventListener("mouseleave", ()=>{ heroNumber.style.transform = ""; });
+    }
+
+    /* 卡片 3D 倾斜（仅精确指针设备） */
+    if((window.matchMedia && window.matchMedia("(hover:hover) and (pointer:fine)").matches)){
+        content.addEventListener("mousemove", e=>{
+            const card = e.target.closest(".bookmark");
+            if(!card) return;
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - .5;
+            const y = (e.clientY - r.top) / r.height - .5;
+            card.style.setProperty("--ry", `${x * 7}deg`);
+            card.style.setProperty("--rx", `${y * -7}deg`);
+        });
+        content.addEventListener("mouseout", e=>{
+            const card = e.target.closest(".bookmark");
+            if(card && !card.contains(e.relatedTarget)){
+                card.style.setProperty("--rx", "0deg");
+                card.style.setProperty("--ry", "0deg");
+            }
+        });
+    }
+
+    /* 页脚滚入揭示 */
+    const footer = document.querySelector(".footer");
+    if(footer){
+        if(!("IntersectionObserver" in window)){ footer.classList.add("revealed"); }
+        else{
+            const io = new IntersectionObserver(entries=>{
+                entries.forEach(en=>{
+                    if(en.isIntersecting){ footer.classList.add("revealed"); io.disconnect(); }
+                });
+            }, { threshold:.08 });
+            io.observe(footer);
+        }
+    }
+
+    /* 随机按钮点击抖动 */
+    const randomBtn = document.getElementById("random-button");
+    if(randomBtn){
+        randomBtn.addEventListener("click", ()=>{
+            randomBtn.classList.remove("shaking");
+            void randomBtn.offsetWidth;
+            randomBtn.classList.add("shaking");
+        });
+    }
+})();
+
+
 
 </script>
 
